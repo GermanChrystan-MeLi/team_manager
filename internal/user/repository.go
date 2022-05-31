@@ -25,6 +25,7 @@ type UserRepository interface {
 	Login(ctx context.Context, user dto.UserLogin, isEmail bool) (string, error)
 	EditUser(ctx context.Context, user dto.UserEdit) (dto.UserEdit, error)
 	DeleteUser(ctx context.Context, id string) error
+	IsUserUnique(ctx context.Context, user dto.UserRegister) error
 }
 
 //=================================================================================//
@@ -187,6 +188,7 @@ func (r *repository) IsUserUnique(ctx context.Context, user dto.UserRegister) er
 	return nil
 }
 
+//=================================================================================//
 func (r *repository) createSession(ctx context.Context, user_id int) (string, error) {
 	//Create session
 	newId := uuid.New().String()

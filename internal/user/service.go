@@ -5,7 +5,6 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/GermanChrystan-MeLi/team_manager/internal/domain"
 	"github.com/GermanChrystan-MeLi/team_manager/internal/dto"
 	"github.com/GermanChrystan-MeLi/team_manager/utils/check"
 	"golang.org/x/crypto/bcrypt"
@@ -13,11 +12,11 @@ import (
 
 //=================================================================================//
 type UserService interface {
-	Get(ctx context.Context, id string) (domain.User, error)
+	Get(ctx context.Context, id string) (dto.UserEdit, error)
 	GetProfile(ctx context.Context, id string) (dto.FullProfile, error)
-	Register(ctx context.Context, user dto.UserRegister) (string, error)
+	Register(ctx context.Context, userRegister dto.UserRegister) (string, error)
 	Login(ctx context.Context, user dto.UserLogin) (string, error)
-	EditUser(ctx context.Context, user dto.UserRegister) (dto.FullProfile, error)
+	EditUser(ctx context.Context, user dto.UserEdit) (dto.UserEdit, error)
 	DeleteUser(ctx context.Context, id string) error
 }
 
@@ -37,7 +36,7 @@ func NewService(repository UserRepository) UserService {
 
 //=================================================================================//
 
-func (s *service) Get(ctx context.Context, id string) (domain.User, error) {
+func (s *service) Get(ctx context.Context, id string) (dto.UserEdit, error) {
 	return s.repository.Get(ctx, id)
 }
 
@@ -87,7 +86,6 @@ func (s *service) EditUser(ctx context.Context, user dto.UserEdit) (dto.UserEdit
 		return dto.UserEdit{}, errors.New("Could not access user")
 	}
 
-	//=================//
 	userType := reflect.TypeOf(user)
 	referenceOfUser := reflect.ValueOf(&user).Elem()
 
