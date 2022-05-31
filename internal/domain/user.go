@@ -7,5 +7,6 @@ type User struct {
 	LastName       string `json:"last_name"`
 	Email          string `json:"email"`
 	MeliSite       string `json:"meli_site"`
+	IsAdmin        bool   `json:"is_admin"`
 	HashedPassword string `json:"hashed_password"`
 }

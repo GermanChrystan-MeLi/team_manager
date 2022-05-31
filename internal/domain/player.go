@@ -2,7 +2,7 @@ package domain
 
 import "github.com/GermanChrystan-MeLi/team_manager/utils/constants"
 
-type PlayerPersonalData struct {
+type Player struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
