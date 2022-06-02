@@ -35,5 +35,4 @@ type UserLogin struct {
 type FullProfile struct {
 	UserData UserData `json:"user_data"`
 	Team     Team     `json:"team"`
-	// SessionID string   `json:"session_id"`
 }

@@ -57,3 +57,19 @@ const (
 	Excellent
 	Messi
 )
+
+//================================//
+type Country int
+
+const (
+	Argentina Country = iota
+	Brazil
+	Chile
+	Colombia
+	Ecuador
+	Mexico
+	Peru
+	Venezuela
+)
+
+//================================//
