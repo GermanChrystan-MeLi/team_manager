@@ -43,7 +43,7 @@ func (s *service) GetOwnPlayers(ctx context.Context) ([]domain.Player, error) {
 func (s *service) GetPlayerById(ctx context.Context) ([]domain.Player, error) {}
 
 //=================================================================================//
-func (s *service) CreatePlayer(ctx context.Context) (domain.Player, error) {
+func (s *service) CreatePlayer(ctx context.Context, nationality) (domain.Player, error) {
 
 }
 

@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/GermanChrystan-MeLi/team_manager/utils/constants"
+
 type Player struct {
 	ID        string            `json:"id"`
 	FirstName string            `json:"first_name"`

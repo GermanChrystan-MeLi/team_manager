@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/GermanChrystan-MeLi/team_manager/utils/constants"
 	wr "github.com/mroth/weightedrand"
 )
 
@@ -67,13 +68,13 @@ func CreateFullName(firstnames, lastnames []wr.Choice) (FullName, error) {
 }
 
 //======================================================================//
-func CreateFullNameByNationality(nationality string) (FullName, error) {
-	switch nationality {
-	case "arg":
+func CreateFullNameByNationality(country constants.Country) (FullName, error) {
+	switch country {
+	case constants.Argentina:
 		return CreateFullName(ArgentinianFirstNames, ArgentinianLastNames)
-	case "brz":
+	case constants.Brazil:
 		return CreateFullName(BrazilianFirstNames, BrazilianLastNames)
-	case "chl":
+	case constants.Chile:
 		return CreateFullName(ChileanFirstNames, ChileanLastNames)
 	default:
 		return FullName{}, errors.New("nationality is not valid")

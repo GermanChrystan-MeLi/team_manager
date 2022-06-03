@@ -1,10 +1,10 @@
 package constants
 
 //===============================//
-type Position int
+type BasePosition int
 
 const (
-	GoalKeeper Position = iota
+	GoalKeeper BasePosition = iota
 	Defenders
 	Midfielders
 	Forwards
@@ -73,3 +73,9 @@ const (
 )
 
 //================================//
+var MinHeight float32 = 1.5
+var MaxHeight float32 = 2
+
+//================================//
+var MinAge int = 16
+var MaxAge int = 42
