@@ -3,6 +3,7 @@ package player
 import (
 	"strconv"
 
+	"github.com/GermanChrystan-MeLi/team_manager/pkg/web"
 	"github.com/gin-gonic/gin"
 )
 
@@ -78,3 +79,18 @@ func (m *middleware) CreatePlayerBaseStatsData() gin.HandlerFunc {
 }
 
 //=================================================================================//
+func (m *middleware) GetPlayerById() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		playerID := ctx.Request.Header.Get("player_id")
+		if playerID == "" {
+			respondWithError(ctx, 400, "missing player id")
+			return
+		}
+		player, err := m.playerService.GetPlayerById(ctx, playerID)
+		if err != nil {
+			respondWithError(ctx, 400, err.Error())
+			return
+		}
+		web.Success(ctx, 200, player)
+	}
+}

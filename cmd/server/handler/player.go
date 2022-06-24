@@ -24,7 +24,7 @@ func NewPlayer(ps player.PlayerService) *Player {
 func (p *Player) GetPlayerById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := context.Background()
-		playerID := c.Request.Header.Get("player_id")
+		playerID := c.Param("id")
 		if playerID == "" {
 			web.Error(c, 400, "missing player id")
 			return
