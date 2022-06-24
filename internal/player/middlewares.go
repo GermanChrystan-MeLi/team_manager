@@ -1,22 +1,15 @@
 package player
 
 import (
-	"database/sql"
-	"math/rand"
 	"strconv"
-	"time"
 
-	"github.com/GermanChrystan-MeLi/team_manager/internal/domain"
-	"github.com/GermanChrystan-MeLi/team_manager/utils/constants"
-	"github.com/GermanChrystan-MeLi/team_manager/utils/names"
-	"github.com/GermanChrystan-MeLi/team_manager/utils/talent"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type PlayerMiddleware interface {
 	CreatePlayerBasicData() gin.HandlerFunc
 	CreatePlayerPhysicalData() gin.HandlerFunc
+	CreatePlayerBaseStatsData() gin.HandlerFunc
 }
 
 func respondWithError(c *gin.Context, code int, message interface{}) {
@@ -25,46 +18,26 @@ func respondWithError(c *gin.Context, code int, message interface{}) {
 
 //=================================================================================//
 type middleware struct {
-	db *sql.DB
+	playerService PlayerService
 }
 
 //=================================================================================//
-func NewPlayerMiddleware(db *sql.DB) PlayerMiddleware {
+func NewPlayerMiddleware(ps PlayerService) PlayerMiddleware {
 	return &middleware{
-		db: db,
+		playerService: ps,
 	}
 }
 
 //=================================================================================//
 func (m *middleware) CreatePlayerBasicData() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-
 		requestCountry := ctx.Request.Header.Get("country")
 		country, err := strconv.Atoi(requestCountry)
 		if err != nil {
 			respondWithError(ctx, 404, err.Error())
 		}
 
-		newID := uuid.New().String()
-
-		PlayerFullName, err := names.CreateFullNameByNationality(constants.Country(country))
-		if err != nil {
-			respondWithError(ctx, 404, err.Error())
-		}
-		// Creating Player struct
-		NewPlayer := domain.Player{
-			ID:        newID,
-			FirstName: PlayerFullName.FirstName,
-			LastName:  PlayerFullName.LastName,
-			Country:   constants.Country(country),
-		}
-
-		insertPlayerQuery := "INSERT into players (id, first_name, last_name, country) VALUES(?,?,?,?)"
-		stmt, err := m.db.Prepare(insertPlayerQuery)
-		if err != nil {
-			respondWithError(ctx, 404, err.Error())
-		}
-		_, err = stmt.Exec(NewPlayer.ID, NewPlayer.FirstName, NewPlayer.LastName, NewPlayer.Country)
+		newID, err := m.playerService.CreatePlayerBasicData(ctx, country)
 		if err != nil {
 			respondWithError(ctx, 400, err.Error())
 		}
@@ -77,45 +50,29 @@ func (m *middleware) CreatePlayerBasicData() gin.HandlerFunc {
 //=================================================================================//
 func (m *middleware) CreatePlayerPhysicalData() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		rand.Seed(time.Now().UTC().UnixNano())
 		playerID := ctx.Request.Header.Get("player_id")
 
-		height := constants.MinHeight + rand.Float32()*(constants.MaxHeight-constants.MinHeight)
-		age := constants.MinAge + rand.Int()*(constants.MaxAge-constants.MinAge)
-		footedness := rand.Intn(2)
-		talent, err := talent.GetRandomTalent()
+		basePosition, err := m.playerService.CreatePlayerPhysicalData(ctx, playerID)
 		if err != nil {
 			respondWithError(ctx, 400, err.Error())
 		}
 
-		NewPlayerPhysicalData := domain.PlayerPhysicalData{
-			ID:            uuid.New().String(),
-			PlayerID:      playerID,
-			Height:        height,
-			Age:           age,
-			PhysicalState: constants.PhysicalState(5),
-			Footedness:    constants.Footedness(footedness),
-			Talent:        talent,
-		}
+		ctx.Writer.Header().Set("base_position", strconv.Itoa(basePosition))
+		ctx.Next()
+	}
+}
 
-		insertPlayerPDQuery := "INSERT into players_physical_data (id, player_id, height, age, physical_state, footedness, talent) VALUES(?,?,?,?,?,?,?)"
-		stmt, err := m.db.Prepare(insertPlayerPDQuery)
-		if err != nil {
-			respondWithError(ctx, 404, err.Error())
-		}
-		_, err = stmt.Exec(
-			NewPlayerPhysicalData.ID,
-			NewPlayerPhysicalData.PlayerID,
-			NewPlayerPhysicalData.Height,
-			NewPlayerPhysicalData.Age,
-			NewPlayerPhysicalData.PhysicalState,
-			NewPlayerPhysicalData.Footedness,
-			NewPlayerPhysicalData.Talent,
-		)
+//=================================================================================//
+func (m *middleware) CreatePlayerBaseStatsData() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		playerID := ctx.Request.Header.Get("player_id")
+
+		basePositionHeader := ctx.Request.Header.Get("base_position")
+
+		err := m.playerService.CreatePlayerBaseStatsData(ctx, playerID, basePositionHeader)
 		if err != nil {
 			respondWithError(ctx, 400, err.Error())
 		}
-
 		ctx.Next()
 	}
 }

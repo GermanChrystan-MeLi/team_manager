@@ -12,7 +12,7 @@ import (
 
 	"github.com/GermanChrystan-MeLi/team_manager/internal/domain"
 	"github.com/GermanChrystan-MeLi/team_manager/internal/dto"
-	"github.com/GermanChrystan-MeLi/team_manager/utils/error_vars"
+	"github.com/GermanChrystan-MeLi/team_manager/pkg/utils/error_vars"
 )
 
 const INITIAL_ACCOUNT_AMOUNT = 100000
@@ -40,6 +40,7 @@ func NewRepository(db *sql.DB) UserRepository {
 	}
 }
 
+//=================================================================================//
 func (r *repository) Get(ctx context.Context, id string) (dto.UserEdit, error) {
 	var user dto.UserEdit
 	getUserQuery := "SELECT (ldap_user, first_name, last_name, email, meli_site) FROM users WHERE id=?"
@@ -64,7 +65,42 @@ func (r *repository) GetProfile(ctx context.Context, id string) (dto.FullProfile
 	}
 
 	// Get User Team
+	var teamID string
+	var teamName string
+	getTeamQuery := "SELECT (id, name) from teams WHERE user_id = ?;"
+	row = r.db.QueryRow(getTeamQuery, id)
+	err = row.Scan(&teamID, teamName)
+	if err != nil || teamID == "" {
+		return dto.FullProfile{
+			UserData: userData,
+			Team:     dto.Team{},
+		}, nil
+	}
 
+	// Get Team Players
+	getTeamPlayersQuery := "SELECT (id, first_name, last_name, country) from players INNER JOIN contracts ON contracts.team_id = ?"
+	rows, err := r.db.Query(getTeamPlayersQuery)
+	if err != nil {
+		return dto.FullProfile{
+			UserData: userData,
+			Team:     dto.Team{},
+		}, nil
+	}
+	var players []domain.Player
+
+	for rows.Next() {
+		p := domain.Player{}
+		_ = rows.Scan(&p.ID, &p.FirstName, &p.LastName, &p.LastName, &p.Country)
+		players = append(players, p)
+	}
+
+	return dto.FullProfile{
+		UserData: userData,
+		Team: dto.Team{
+			Name:    teamName,
+			Players: players,
+		},
+	}, nil
 }
 
 //=================================================================================//
@@ -183,7 +219,7 @@ func (r *repository) IsUserUnique(ctx context.Context, user dto.UserRegister) er
 	row := r.db.QueryRow(checkUniqueQuery, user.Email, user.LdapUser)
 	_ = row.Scan(&amountUsers)
 	if amountUsers > 0 {
-		return errors.New("User already has an account")
+		return errors.New("user already has an account")
 	}
 	return nil
 }

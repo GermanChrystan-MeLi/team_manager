@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GermanChrystan-MeLi/team_manager/utils/constants"
+	"github.com/GermanChrystan-MeLi/team_manager/pkg/utils/constants"
 	wr "github.com/mroth/weightedrand"
 )
 

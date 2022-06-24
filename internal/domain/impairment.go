@@ -1,6 +1,6 @@
 package domain
 
-import "github.com/GermanChrystan-MeLi/team_manager/utils/constants"
+import "github.com/GermanChrystan-MeLi/team_manager/pkg/utils/constants"
 
 type Impairment struct {
 	ID             int                         `json:"id"`

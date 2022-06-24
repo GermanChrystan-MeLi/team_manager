@@ -6,7 +6,7 @@ import (
 	"reflect"
 
 	"github.com/GermanChrystan-MeLi/team_manager/internal/dto"
-	"github.com/GermanChrystan-MeLi/team_manager/utils/check"
+	"github.com/GermanChrystan-MeLi/team_manager/pkg/utils/check"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -49,7 +49,7 @@ func (s *service) GetProfile(ctx context.Context, id string) (dto.FullProfile, e
 func (s *service) Register(ctx context.Context, userRegister dto.UserRegister) (string, error) {
 	// Checking email is valid
 	if isEmailValid := check.IsEmail(userRegister.Email); !isEmailValid {
-		return "", errors.New("Email not valid")
+		return "", errors.New("email not valid")
 	}
 	// Checking user is unique
 	if isUserUnique := s.repository.IsUserUnique(ctx, userRegister); isUserUnique != nil {
@@ -83,7 +83,7 @@ func (s *service) EditUser(ctx context.Context, user dto.UserEdit) (dto.UserEdit
 	previousUserValue := reflect.ValueOf(previousUser)
 
 	if notFoundErr != nil {
-		return dto.UserEdit{}, errors.New("Could not access user")
+		return dto.UserEdit{}, errors.New("could not access user")
 	}
 
 	userType := reflect.TypeOf(user)
@@ -110,7 +110,7 @@ func (s *service) EditUser(ctx context.Context, user dto.UserEdit) (dto.UserEdit
 
 	userEdited, updateErr := s.repository.EditUser(ctx, user)
 	if updateErr != nil {
-		return dto.UserEdit{}, errors.New("Could not update user")
+		return dto.UserEdit{}, errors.New("could not update user")
 	} else {
 		return userEdited, nil
 	}
