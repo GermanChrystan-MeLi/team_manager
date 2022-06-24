@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/GermanChrystan-MeLi/team_manager/internal/domain"
+	"github.com/GermanChrystan-MeLi/team_manager/internal/dto"
 	"github.com/GermanChrystan-MeLi/team_manager/pkg/utils/constants"
 	"github.com/GermanChrystan-MeLi/team_manager/pkg/utils/names"
 	"github.com/GermanChrystan-MeLi/team_manager/pkg/utils/stats"
@@ -19,6 +20,8 @@ type PlayerService interface {
 	// GetAllPlayersAvailable(ctx context.Context) ([]domain.Player, error)
 	// GetOwnPlayers(ctx context.Context) ([]domain.Player, error)
 	// GetPlayerById(ctx context.Context) ([]domain.Player, error)
+
+	GetPlayerById(ctx context.Context, id string) (dto.PlayerCardDTO, error)
 
 	CreatePlayerBasicData(ctx context.Context, country int) (string, error)
 	CreatePlayerPhysicalData(ctx context.Context, player string) (int, error)
@@ -51,7 +54,9 @@ func NewService(repository PlayerRepository) PlayerService {
 // }
 
 //=================================================================================//
-// func (s *service) GetPlayerById(ctx context.Context) ([]domain.Player, error) {}
+func (s *service) GetPlayerById(ctx context.Context, id string) (dto.PlayerCardDTO, error) {
+	return s.repository.GetPlayerById(ctx, id)
+}
 
 //=================================================================================//
 // func (s *service) UpdatePlayer(ctx context.Context) (domain.Player, error) {}

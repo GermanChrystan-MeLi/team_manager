@@ -2,6 +2,7 @@ package dto
 
 import "github.com/GermanChrystan-MeLi/team_manager/pkg/utils/constants"
 
+// Not used for now
 type BasicPlayerDTO struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"first_name"`
@@ -12,6 +13,7 @@ type BasicPlayerDTO struct {
 	Suspended bool   `json:"suspended"`
 }
 
+// Not used for now
 type PlayerStatisticsDataDTO struct {
 	PlayerID    int `json:"player_id"`
 	Appearances int `json:"appearances"`
@@ -25,18 +27,29 @@ type PlayerStatisticsDataDTO struct {
 }
 
 type PlayerCardDTO struct {
-	// Data from BasicData
-	ID        int    `json:"id"`
+	BasicData       PlayerBasicDataDTO     `json:"basic_data"`
+	PhysicalData    PlayerPhysicalDataDTO  `json:"physical_data"`
+	PlayerBaseStats PlayerBaseStatsDataDTO `json:"base_stats"`
+	// Calculated contract data
+	// ContractLength int     `json:"contract_length"`
+	// ContractPrice  float32 `json:"contract_price"`
+}
+
+type PlayerBasicDataDTO struct {
+	ID        string `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Country   int    `json:"country"`
-	// Data from PhysicalData
+}
+type PlayerPhysicalDataDTO struct {
 	Height        float32                 `json:"height"`
 	BasePosition  constants.BasePosition  `json:"position"`
 	Age           int                     `json:"age"`
 	PhysicalState constants.PhysicalState `json:"physical_state"`
 	Footedness    constants.Footedness    `json:"footedness"`
-	// Data from BaseStats
+}
+
+type PlayerBaseStatsDataDTO struct {
 	Charisma     int `json:"charisma"`
 	Intelligence int `json:"intelligence"`
 	Endurance    int `json:"endurance"`
@@ -45,7 +58,4 @@ type PlayerCardDTO struct {
 	Agility      int `json:"agility"`
 	BallHandling int `json:"ball_handling"`
 	Blocking     int `json:"blocking"`
-	// Calculated contract data
-	ContractLength int     `json:"contract_length"`
-	ContractPrice  float32 `json:"contract_price"`
 }
