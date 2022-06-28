@@ -159,9 +159,9 @@ func (r *mockRepository) IsUserUnique(ctx context.Context, user dto.UserRegister
 		}
 	}
 	if amountUsers > 0 {
-		return nil
+		return errors.New("user already has an account")
 	}
-	return errors.New("user already has an account")
+	return nil
 }
 
 //=================================================================================//

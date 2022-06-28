@@ -10,7 +10,7 @@ func IsEmail(email string) bool {
 		return false
 	}
 
-	if strings.Contains(email, "@mercadolibre.com") {
+	if !strings.Contains(email, "@mercadolibre.com") {
 		return false
 	}
 	return true
