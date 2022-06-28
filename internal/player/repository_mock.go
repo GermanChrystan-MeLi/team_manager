@@ -35,6 +35,14 @@ func (r *mockRepository) resetValues() {
 	r.wasRead = false
 }
 
+func (r *mockRepository) GetWasWritten() bool {
+	return r.wasWritten
+}
+
+func (r *mockRepository) GetWasRead() bool {
+	return r.wasRead
+}
+
 //=================================================================================//
 func (r *mockRepository) GetPlayerById(ctx context.Context, id string) (dto.PlayerCardDTO, error) {
 	r.resetValues()

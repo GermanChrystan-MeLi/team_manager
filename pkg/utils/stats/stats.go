@@ -10,8 +10,13 @@ import (
 
 func DerivedToRandomBaseStat(derivedStat string, points int) map[string]int {
 	rand.Seed(time.Now().UTC().UnixNano())
+	var partition int
 	// Partitioning the points between base stats
-	partition := rand.Intn((points-1)-1+1) + 1
+	if (points/2)-1 <= 0 {
+		partition = 0
+	} else {
+		partition = rand.Intn((points/2)-1) + 1
+	}
 
 	result := make(map[string]int)
 	result[DerivedStatsMap[derivedStat][0]] = partition
