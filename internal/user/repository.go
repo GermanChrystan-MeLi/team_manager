@@ -137,7 +137,7 @@ func (r *repository) Login(ctx context.Context, userLogin dto.UserLogin, isEmail
 	if isEmail {
 		firstValue = "email"
 	} else {
-		firstValue = "username"
+		firstValue = "ldap_user"
 	}
 
 	getUserQuery := fmt.Sprintf("SELECT (id, hashed_password) FROM users WHERE %s=?", firstValue)
